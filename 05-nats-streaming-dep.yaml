@@ -1,0 +1,24 @@
+---
+apiVersion: "streaming.nats.io/v1alpha1"
+kind: "NatsStreamingCluster"
+metadata:
+  name: "dennis-nats-stan-logs"
+spec:
+  size: 3
+  natsSvc: "dennis-nats-logs"
+  config: {}
+#kubectl create secret generic stan-config --from-file ./config/streaming.conf
+  configFile: "/etc/stan/config/streaming.conf"
+  template:
+    spec:
+      volumes:
+        - name: stan-config
+          secret:
+            secretName: stan-config
+      containers:
+        - name: nats-streaming
+          volumeMounts:
+            - mountPath: /etc/stan/config
+              name: stan-config
+              readOnly: true
+
